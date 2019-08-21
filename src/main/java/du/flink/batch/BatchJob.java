@@ -43,50 +43,19 @@ public class BatchJob {
 	public static void main(String[] args) throws Exception {
 		// set up the batch execution environment
 //		final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
-		long begin = System.currentTimeMillis();
 		LocalEnvironment env = ExecutionEnvironment.createLocalEnvironment();
-//		String path = "D:\\face_data_monitor.log";
-		String path = "C:\\Users\\Administrator\\Desktop\\xcm_monitor_data_2019-08-14.0.log";
+		String path = "G:\\xcm_monitor_data_2019-08-20.0.log";
 		DataSource<String> stringDataSource = env.readTextFile(path);
 		ReduceOperator<AdvertisementMonitorData> reduce = stringDataSource.map(string -> JSON.parseObject(string, AdvertisementMonitorData.class))
-				.filter((FilterFunction<AdvertisementMonitorData>) advertisementMonitorData -> advertisementMonitorData.getScreenType().equals(1))
-//				.groupBy("deviceNumber", "advertisementName")
-				.groupBy("deviceNumber")
+				.groupBy("deviceNumber", "advertisementName", "sex")
 				.reduce((ReduceFunction<AdvertisementMonitorData>) (advertisementMonitorData, t1) -> {
 					advertisementMonitorData.setDuration(advertisementMonitorData.getDuration() + t1.getDuration());
 					advertisementMonitorData.setExposuresNumber(advertisementMonitorData.getExposuresNumber() + t1.getExposuresNumber());
+					advertisementMonitorData.setTouchNumber(advertisementMonitorData.getTouchNumber() + t1.getTouchNumber());
+					advertisementMonitorData.setWatchNumber(advertisementMonitorData.getWatchNumber() + t1.getWatchNumber());
 					return advertisementMonitorData;
 				});
-		long end = System.currentTimeMillis();
-		System.out.println("end - begin: "+ (end - begin));
-		reduce.print();
-		reduce.writeAsText("D:\\monitor")
-
-		;
-        /*
-		 * Here, you can start creating your execution plan for Flink.
-		 *
-		 * Start with getting some data from the environment, like
-		 * 	env.readTextFile(textPath);
-		 *
-		 * then, transform the resulting DataSet<String> using operations
-		 * like
-		 * 	.filter()
-		 * 	.flatMap()
-		 * 	.join()
-		 * 	.coGroup()
-		 *
-		 * and many more.
-		 * Have a look at the programming guide for the Java API:
-		 *
-		 * http://flink.apache.org/docs/latest/apis/batch/index.html
-		 *
-		 * and the examples
-		 *
-		 * http://flink.apache.org/docs/latest/apis/batch/examples.html
-		 *
-		 */
-		// execute program
+		reduce.writeAsText("G:\\monitor");
 		env.execute("Flink Batch Java API Skeleton");
 	}
 }
