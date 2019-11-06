@@ -19,14 +19,12 @@
 package du.flink.batch;
 
 import com.alibaba.fastjson.JSON;
-import org.apache.flink.api.common.functions.FilterFunction;
+import du.flink.batch.model.FaceData;
 import org.apache.flink.api.common.functions.ReduceFunction;
 import org.apache.flink.api.java.ExecutionEnvironment;
 import org.apache.flink.api.java.LocalEnvironment;
-import org.apache.flink.api.java.functions.KeySelector;
 import org.apache.flink.api.java.operators.DataSource;
 import org.apache.flink.api.java.operators.ReduceOperator;
-import org.apache.flink.api.java.operators.UnsortedGrouping;
 
 /**
  * Skeleton for a Flink Batch Job.
@@ -46,9 +44,9 @@ public class BatchJob {
 		LocalEnvironment env = ExecutionEnvironment.createLocalEnvironment();
 		String path = "G:\\xcm_monitor_data_2019-08-20.0.log";
 		DataSource<String> stringDataSource = env.readTextFile(path);
-		ReduceOperator<AdvertisementMonitorData> reduce = stringDataSource.map(string -> JSON.parseObject(string, AdvertisementMonitorData.class))
+		ReduceOperator<FaceData.AdvertisementMonitorData> reduce = stringDataSource.map(string -> JSON.parseObject(string, FaceData.AdvertisementMonitorData.class))
 				.groupBy("deviceNumber", "advertisementName", "sex")
-				.reduce((ReduceFunction<AdvertisementMonitorData>) (advertisementMonitorData, t1) -> {
+				.reduce((ReduceFunction<FaceData.AdvertisementMonitorData>) (advertisementMonitorData, t1) -> {
 					advertisementMonitorData.setDuration(advertisementMonitorData.getDuration() + t1.getDuration());
 					advertisementMonitorData.setExposuresNumber(advertisementMonitorData.getExposuresNumber() + t1.getExposuresNumber());
 					advertisementMonitorData.setTouchNumber(advertisementMonitorData.getTouchNumber() + t1.getTouchNumber());
