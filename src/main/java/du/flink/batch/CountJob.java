@@ -68,7 +68,6 @@ public class CountJob {
 							genderKey = faceData.getGender();
 							++count;
 						}
-
 						out.collect(new Tuple3<>(ageRangeKey, genderKey, count));
 					}
 				});
