@@ -9,6 +9,7 @@ import org.apache.flink.api.java.operators.DataSource;
 import org.apache.flink.api.java.operators.GroupReduceOperator;
 import org.apache.flink.api.java.operators.MapOperator;
 import org.apache.flink.api.java.tuple.Tuple3;
+import org.apache.flink.api.java.tuple.Tuple4;
 import org.apache.flink.util.Collector;
 
 /**
@@ -20,12 +21,12 @@ import org.apache.flink.util.Collector;
 public class CountJob {
 	public static void main(String[] args) throws Exception {
 		// 执行环境
-//		final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
-		final ExecutionEnvironment env = ExecutionEnvironment.createLocalEnvironment();
+		final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
+//		final ExecutionEnvironment env = ExecutionEnvironment.createLocalEnvironment();
 
 		// hdfs路径
-//		String hdfsPath = "hdfs://dev-base-bigdata-bj1-01:8020/flume/face/";
-		String hdfsPath = "E:\\face";
+		String hdfsPath = "hdfs://dev-base-bigdata-bj1-01:8020/flume/face/";
+//		String hdfsPath = "E:\\face";
 
 		// 读取文件，获得DataSource
 		DataSource<String> dataSource = env.readTextFile(hdfsPath);
@@ -54,7 +55,7 @@ public class CountJob {
 
 		// 以“年龄、性别”分组，统计人次（实现count功能）
 
-		GroupReduceOperator<FaceData, Tuple3<String, String, Integer>> reduce = faceDataMap.filter(faceData -> faceData != null)
+		/*GroupReduceOperator<FaceData, Tuple3<String, String, Integer>> reduce = faceDataMap.filter(faceData -> faceData != null)
 				.filter(faceData -> StringUtils.isNotBlank(faceData.getGender()))
 				.groupBy("ageRange", "gender")
 				.reduceGroup(new RichGroupReduceFunction<FaceData, Tuple3<String, String, Integer>>() {
@@ -70,9 +71,30 @@ public class CountJob {
 						}
 						out.collect(new Tuple3<>(ageRangeKey, genderKey, count));
 					}
+				});*/
+
+		GroupReduceOperator<FaceData, Tuple4<String, String, String, Integer>> reduce = faceDataMap.filter(faceData -> faceData != null)
+				.filter(faceData -> StringUtils.isNotBlank(faceData.getGender()))
+				.groupBy("ageRange", "dateTime", "gender")
+				.reduceGroup(new RichGroupReduceFunction<FaceData, Tuple4<String, String, String, Integer>>() {
+					@Override
+					public void reduce(Iterable<FaceData> in, Collector<Tuple4<String, String, String, Integer>> out) throws Exception {
+						String ageRangeKey = "";
+						String genderKey = "";
+						String hour = "";
+						int count = 0;
+						for (FaceData faceData : in) {
+							ageRangeKey = faceData.getAgeRange();
+							genderKey = faceData.getGender();
+							String dateTime = faceData.getDateTime();
+							hour = dateTime.substring(8,10);
+							++count;
+						}
+						out.collect(new Tuple4<>(ageRangeKey, hour, genderKey, count));
+					}
 				});
 
-		reduce.writeAsText(hdfsPath);
+		reduce.writeAsText("E:\\face");
 		// 以“年龄”分组，统计人数
 //		UnsortedGrouping<FaceData> faceDataUnsortedGrouping = faceDataMap.groupBy("ageRange", "visitorId");
 
