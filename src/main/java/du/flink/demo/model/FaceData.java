@@ -7,6 +7,20 @@ package du.flink.demo.model;
  * @date 2019/11/5 10:11
  */
 public class FaceData {
+
+	public FaceData(){
+
+	}
+
+	public FaceData(String ageRange, Long enterTime, String dateTime, String gender, Long id, Long visitorId) {
+		this.ageRange = ageRange;
+		this.enterTime = enterTime;
+		this.dateTime = dateTime;
+		this.gender = gender;
+		this.id = id;
+		this.visitorId = visitorId;
+	}
+
 	/**
 	 * 年龄段
 	 */
@@ -31,6 +45,7 @@ public class FaceData {
 	 * visitorId
 	 */
 	private Long visitorId;
+
 
 	public String getAgeRange() {
 		return ageRange;
@@ -80,5 +95,15 @@ public class FaceData {
 		this.visitorId = visitorId;
 	}
 
-
+	@Override
+	public String toString() {
+		return "FaceData{" +
+				"ageRange='" + ageRange + '\'' +
+				", enterTime=" + enterTime +
+				", dateTime='" + dateTime + '\'' +
+				", gender='" + gender + '\'' +
+				", id=" + id +
+				", visitorId=" + visitorId +
+				'}';
+	}
 }

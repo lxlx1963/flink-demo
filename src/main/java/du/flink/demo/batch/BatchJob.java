@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package du.flink.demo;
+package du.flink.demo.batch;
 
 import com.alibaba.fastjson.JSON;
 import du.flink.demo.model.AdvertisementMonitorData;
