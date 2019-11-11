@@ -1,4 +1,4 @@
-package du.flink.batch.model;
+package du.flink.demo.model;
 
 /**
  * FaceData

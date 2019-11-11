@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package du.flink.batch;
+package du.flink.demo;
 
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 

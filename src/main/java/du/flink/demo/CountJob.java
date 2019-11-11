@@ -1,14 +1,13 @@
-package du.flink.batch;
+package du.flink.demo;
 
 import com.alibaba.fastjson.JSON;
-import du.flink.batch.model.FaceData;
+import du.flink.demo.model.FaceData;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.api.common.functions.RichGroupReduceFunction;
 import org.apache.flink.api.java.ExecutionEnvironment;
 import org.apache.flink.api.java.operators.DataSource;
 import org.apache.flink.api.java.operators.GroupReduceOperator;
 import org.apache.flink.api.java.operators.MapOperator;
-import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.api.java.tuple.Tuple4;
 import org.apache.flink.util.Collector;
 

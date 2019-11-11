@@ -16,10 +16,10 @@
  * limitations under the License.
  */
 
-package du.flink.batch;
+package du.flink.demo;
 
 import com.alibaba.fastjson.JSON;
-import du.flink.batch.model.AdvertisementMonitorData;
+import du.flink.demo.model.AdvertisementMonitorData;
 import org.apache.flink.api.common.functions.ReduceFunction;
 import org.apache.flink.api.java.ExecutionEnvironment;
 import org.apache.flink.api.java.LocalEnvironment;
@@ -29,7 +29,7 @@ import org.apache.flink.api.java.operators.ReduceOperator;
 /**
  * Skeleton for a Flink Batch Job.
  *
- * <p>For a tutorial how to write a Flink batch application, check the
+ * <p>For a tutorial how to write a Flink demo application, check the
  * tutorials and examples on the <a href="http://flink.apache.org/docs/stable/">Flink Website</a>.
  *
  * <p>To package your application into a JAR file for execution,
@@ -39,7 +39,7 @@ import org.apache.flink.api.java.operators.ReduceOperator;
 public class BatchJob {
 
 	public static void main(String[] args) throws Exception {
-		// set up the batch execution environment
+		// set up the demo execution environment
 //		final ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 		LocalEnvironment env = ExecutionEnvironment.createLocalEnvironment();
 		String path = "G:\\xcm_monitor_data_2019-08-20.0.log";
