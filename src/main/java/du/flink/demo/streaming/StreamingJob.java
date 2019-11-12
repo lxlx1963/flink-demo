@@ -18,17 +18,27 @@
 
 package du.flink.demo.streaming;
 
+import com.alibaba.fastjson.JSON;
+import du.flink.demo.model.FaceData;
+import du.flink.demo.model.dto.FaceDataDTO;
+import org.apache.flink.api.java.tuple.Tuple2;
+import org.apache.flink.streaming.api.datastream.DataStream;
+import org.apache.flink.streaming.api.datastream.DataStreamSource;
+import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.api.windowing.time.Time;
+import org.apache.flink.table.api.Table;
+import org.apache.flink.table.api.java.StreamTableEnvironment;
 
 /**
  * Skeleton for a Flink Streaming Job.
- *
+ * <p>
  * <p>For a tutorial how to write a Flink streaming application, check the
  * tutorials and examples on the <a href="http://flink.apache.org/docs/stable/">Flink Website</a>.
- *
+ * <p>
  * <p>To package your application into a JAR file for execution, run
  * 'mvn clean package' on the command line.
- *
+ * <p>
  * <p>If you change the name of the main class (with the public static void main(String[] args))
  * method, change the respective entry in the POM.xml file (simply search for 'mainClass').
  */
@@ -36,28 +46,33 @@ public class StreamingJob {
 
 	public static void main(String[] args) throws Exception {
 		// set up the streaming execution environment
-		final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+		final StreamExecutionEnvironment env = StreamExecutionEnvironment.createLocalEnvironment();
 
-		/*
-		 * Here, you can start creating your execution plan for Flink.
-		 *
-		 * Start with getting some data from the environment, like
-		 * 	env.readTextFile(textPath);
-		 *
-		 * then, transform the resulting DataStream<String> using operations
-		 * like
-		 * 	.filter()
-		 * 	.flatMap()
-		 * 	.join()
-		 * 	.coGroup()
-		 *
-		 * and many more.
-		 * Have a look at the programming guide for the Java API:
-		 *
-		 * http://flink.apache.org/docs/latest/apis/streaming/index.html
-		 *
-		 */
+		// 文件路径
+		String filePath = "hdfs://dev-base-bigdata-bj1-01:8020/flume/face/";
+		filePath = "E:\\face";
+		DataStreamSource<String> dataStream = env.readTextFile(filePath);
 
+
+		StreamTableEnvironment fsTableEnv = StreamTableEnvironment.create(env);
+
+
+		SingleOutputStreamOperator<FaceData> faceDataStream = dataStream.map(faceStr -> JSON.parseObject(faceStr, FaceData.class));
+
+
+		fsTableEnv.registerDataStream("face_data", faceDataStream);
+
+		String sql = "SELECT ageRange,COUNT(id) as total FROM face_data GROUP BY ageRange";
+
+		Table table = fsTableEnv.sqlQuery(sql);
+
+		DataStream<Tuple2<Boolean, FaceDataDTO>> faceDataDTODataStream = fsTableEnv.toRetractStream(table, FaceDataDTO.class);
+		faceDataDTODataStream.timeWindowAll(Time.minutes(5L));
+
+		// 5分钟读取一次数据
+		System.out.println("-------读取数据--------");
+
+		faceDataDTODataStream.print("-------Flink streaming 读取数据--------");
 		// execute program
 		env.execute("Flink Streaming Java API Skeleton");
 	}
