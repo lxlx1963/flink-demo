@@ -1,6 +1,6 @@
 package du.flink.demo.util;
 
-import com.xinchao.flink.constant.DateConstant;
+import du.flink.demo.constant.DateConstant;
 import org.apache.commons.lang3.StringUtils;
 
 import java.sql.Timestamp;
