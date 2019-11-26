@@ -6,7 +6,7 @@ import du.flink.demo.constant.DateConstant;
 import du.flink.demo.model.FaceData;
 import du.flink.demo.model.dto.FaceDataDTO;
 import du.flink.demo.util.DateUtils;
-import du.flink.demo.util.PropertiesUitls;
+import du.flink.demo.util.PropertiesUtils;
 import org.apache.flink.api.java.ExecutionEnvironment;
 import org.apache.flink.api.java.io.jdbc.JDBCOutputFormat;
 import org.apache.flink.api.java.operators.DataSource;
@@ -44,10 +44,10 @@ public class PeopleNumberMySQLTableJob {
 
 			String insertSql = "insert into frp_test_people_number(year_month_day, age_range, people_number, add_time) values (?,?,?,?)";
 
-			String url = PropertiesUitls.getValueByKey(ApplicationPropertiesContstant.MYSQL_DASHBOARD_URL);
-			String username = PropertiesUitls.getValueByKey(ApplicationPropertiesContstant.MYSQL_DASHBOARD_USERNAME);
-			String password = PropertiesUitls.getValueByKey(ApplicationPropertiesContstant.MYSQL_DASHBOARD_PASSWORD);
-			String driverClassName = PropertiesUitls.getValueByKey(ApplicationPropertiesContstant.MYSQL_DASHBOARD_DRIVER_CLASS_NAME);
+			String url = PropertiesUtils.getValueByKey(ApplicationPropertiesContstant.MYSQL_DASHBOARD_URL);
+			String username = PropertiesUtils.getValueByKey(ApplicationPropertiesContstant.MYSQL_DASHBOARD_USERNAME);
+			String password = PropertiesUtils.getValueByKey(ApplicationPropertiesContstant.MYSQL_DASHBOARD_PASSWORD);
+			String driverClassName = PropertiesUtils.getValueByKey(ApplicationPropertiesContstant.MYSQL_DASHBOARD_DRIVER_CLASS_NAME);
 
 			String yearMonthDay = DateUtils.getPastDay(0, DateConstant.DATE_YEAR_MONTH_DAY);
 
